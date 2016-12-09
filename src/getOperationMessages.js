@@ -44,12 +44,9 @@ module.exports = function getOperationMessages (pkg) {
 		.then(operationsFiles => promiseUtils.flatMap(operationsFiles, jsonFile => {
 			return promiseUtils.flatMap(
 				readOperationsFromJson(path.join(pkg.path, jsonFile)),
-				op => getMessagesFromOperation(op).map(original => new Message({
-					original,
-					metadata: {
-						package: pkg.name,
-						file: jsonFile
-					}
+				op => getMessagesFromOperation(op).map(original => Message.fromSource(original, {
+					package: pkg.name,
+					file: jsonFile
 				}))
 			);
 		}));

@@ -4,7 +4,7 @@
   "description": "Tools for creating and maintaining FontoXML localizations.",
   "main": "index.js",
   "bin": {
-    "fontoxml-extract-messages": "./bin/extract-messages.js"
+    "fontoxml-localization-tool": "./bin/localization-tool.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

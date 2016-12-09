@@ -96,14 +96,11 @@ module.exports = function getSourceMessages (pkg) {
 	return glob(pattern, { cwd: pkg.path })
 		.then(sourceFiles => promiseUtils.flatMap(sourceFiles, sourceFile => {
 			return readFile(path.join(pkg.path, sourceFile), 'utf8')
-				.then(source => getMessagesFromSource(source).map(info => new Message({
-					original: info.message,
-					metadata: {
-						package: pkg.name,
-						file: sourceFile,
-						line: info.line,
-						column: info.column
-					}
+				.then(source => getMessagesFromSource(source).map(info => Message.fromSource(info.message, {
+					package: pkg.name,
+					file: sourceFile,
+					line: info.line,
+					column: info.column
 				})));
 		}));
 };
