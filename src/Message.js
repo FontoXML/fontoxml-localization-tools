@@ -66,21 +66,25 @@ module.exports = class Message {
 	}
 
 	update (oldMessage) {
-		if (this.original !== oldMessage.original) {
+		if (oldMessage && this.original !== oldMessage.original) {
 			throw new Error('Can only update a message if its original is unchanged.');
 		}
 
 		return new Message({
 			original: this.original,
 			// Preserve localization and conflicts
-			localized: oldMessage._localized,
-			conflicts: oldMessage._conflicts,
+			localized: oldMessage && oldMessage._localized,
+			conflicts: oldMessage && oldMessage._conflicts,
 			// Overwrite metadata with data from template
 			metadata: this._metadata
 		});
 	}
 
 	merge (message) {
+		if (this.original !== message.original) {
+			throw new Error('Can only merge messages with the same original.');
+		}
+
 		const conflicts = mergeConflicts(this._conflicts, message._conflicts);
 		if (this._localized !== undefined &&
 			message._localized !== undefined &&

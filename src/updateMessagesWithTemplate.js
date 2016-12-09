@@ -14,7 +14,7 @@ module.exports = function updateMessagesWithTemplate (oldMessages, templateMessa
 		}
 		return templateMessage.update(oldMessage);
 	});
-	const removed = messages.filter(message => !isUsedByOriginal[message.original]);
+	const removed = oldMessages.filter(message => !isUsedByOriginal[message.original]);
 
 	return { messages, added, removed };
 };
