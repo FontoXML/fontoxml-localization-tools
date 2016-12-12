@@ -76,8 +76,7 @@ function run () {
 					printMessages(messages),
 					printMessagesToStdErr(added, 'need localization'),
 					printMessagesToStdErr(removed, 'removed')
-				]))
-				.then(printMessages);
+				]));
 
 		case 'help':
 		case '-h':
