@@ -5,7 +5,7 @@ const Message = require('../../src/Message');
 
 const roundtripThroughJson = require('./roundtripThroughJson');
 
-describe('updateMessagesWithTemplate', () => {
+describe('updateMessagesWithTemplate()', () => {
 	it('applies update to matching messages and detects new and removed messages', () => {
 		chai.assert.deepEqual(
 			roundtripThroughJson(updateMessagesWithTemplate([

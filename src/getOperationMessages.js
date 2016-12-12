@@ -1,35 +1,11 @@
 const fs = require('fs-extra');
 const path = require('path');
 
-const Message = require('./Message');
+const getMessagesFromOperation = require('./getMessagesFromOperation');
 const promiseUtils = require('./promiseUtils');
 
 const glob = promiseUtils.asPromise(require('glob'));
 const readJson = promiseUtils.asPromise(fs.readJson);
-
-const TRANSLATEABLE_STRING_PREFIX = 't__';
-
-function getMessagesFromOperation (operation) {
-	const messages = [];
-
-	(function walk (obj) {
-		Object.keys(obj).forEach(function (key) {
-			var value = obj[key];
-			var valueType = typeof value;
-
-			// Detect magic translateable string marker and translate in-place
-			if (valueType === 'string' && value.startsWith(TRANSLATEABLE_STRING_PREFIX)) {
-				messages.push(value.slice(TRANSLATEABLE_STRING_PREFIX.length));
-			}
-
-			if (valueType === 'object' && value !== null) {
-				walk(value);
-			}
-		});
-	})(operation);
-
-	return messages;
-}
 
 function readOperationsFromJson (path) {
 	return readJson(path)
@@ -44,10 +20,7 @@ module.exports = function getOperationMessages (pkg) {
 		.then(operationsFiles => promiseUtils.flatMap(operationsFiles, jsonFile => {
 			return promiseUtils.flatMap(
 				readOperationsFromJson(path.join(pkg.path, jsonFile)),
-				op => getMessagesFromOperation(op).map(original => Message.fromSource(original, {
-					package: pkg.name,
-					file: jsonFile
-				}))
+				op => getMessagesFromOperation(op, pkg.name, jsonFile)
 			);
 		}));
 };

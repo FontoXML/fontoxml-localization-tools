@@ -5,7 +5,7 @@ const Message = require('../../src/Message');
 
 const roundtripThroughJson = require('./roundtripThroughJson');
 
-describe('deduplicateMessages', () => {
+describe('deduplicateMessages()', () => {
 	it('merges messages with the same original, preserving the first occurence', () => {
 		chai.assert.deepEqual(
 			roundtripThroughJson(deduplicateMessages([
