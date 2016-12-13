@@ -13,6 +13,13 @@ function expectedMeta (line, column) {
 	} ];
 }
 
+function expectedMetaWithoutCoords () {
+	return [ {
+		package: 'package-name',
+		file: 'src/install.js'
+	} ];
+}
+
 describe('getMessagesFromSource()', () => {
 	it('extracts messages from calls to fontoxml-localization/t() in AMD modules', () => {
 		chai.assert.deepEqual(
@@ -38,7 +45,7 @@ define([
 		};
 	};
 });
-			`, 'package-name', 'src/install.js')),
+			`, 'package-name', 'src/install.js', true)),
 			[
 				{ in: 'This is a test', meta: expectedMeta(13, 11) },
 				{ in: 'One {THING}', meta: expectedMeta(18, 11) },
@@ -65,11 +72,11 @@ export default function meep () {
 		})
 	};
 };
-			`, 'package-name', 'src/install.js')),
+			`, 'package-name', 'src/install.js', false)),
 			[
-				{ in: 'This is a test', meta: expectedMeta(8, 10) },
-				{ in: 'One {THING}', meta: expectedMeta(13, 10) },
-				{ in: 'Two', meta: expectedMeta(13, 44) }
+				{ in: 'This is a test', meta: expectedMetaWithoutCoords() },
+				{ in: 'One {THING}', meta: expectedMetaWithoutCoords() },
+				{ in: 'Two', meta: expectedMetaWithoutCoords() }
 			]
 		);
 	});

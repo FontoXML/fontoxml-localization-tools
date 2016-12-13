@@ -50,13 +50,14 @@ function getImportSourcePath (binding) {
 }
 
 /**
- * @param  {string}  source       full source code to extract messages from
- * @param  {string}  packageName
- * @param  {string}  fileName
+ * @param  {string}   source       full source code to extract messages from
+ * @param  {string}   packageName
+ * @param  {string}   fileName
+ * @param  {boolean}  includeLineAndColumn
  *
  * @return  {Message[]}
  */
-module.exports = function getMessagesFromSource (source, packageName, fileName) {
+module.exports = function getMessagesFromSource (source, packageName, fileName, includeLineAndColumn) {
 	const ast = babylon.parse(source, {
 		sourceType: 'module',
 		plugins: [ 'jsx', 'objectRestSpread' ]
@@ -81,12 +82,15 @@ module.exports = function getMessagesFromSource (source, packageName, fileName) 
 				console.warn('Call to t() with non-literal argument at', message.loc);
 			}
 
-			messages.push(Message.fromSource(message.value, {
+			const meta = {
 				package: packageName,
-				file: fileName,
-				line: message.loc.start.line,
-				column: message.loc.start.column
-			}));
+				file: fileName
+			};
+			if (includeLineAndColumn) {
+				meta.line = message.loc.start.line;
+				meta.column = message.loc.start.column;
+			}
+			messages.push(Message.fromSource(message.value, meta));
 		}
 	});
 
