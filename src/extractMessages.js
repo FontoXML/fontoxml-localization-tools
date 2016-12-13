@@ -9,6 +9,11 @@ function getMessagesForPackage (pkg) {
 	]);
 }
 
+/**
+ * @param  {{name: string, path: string}[]}  packages
+ *
+ * @return  {Promise.<Message[]>}
+ */
 module.exports = function extractMessages (packages) {
 	return promiseUtils.flatMap(packages, getMessagesForPackage);
 };

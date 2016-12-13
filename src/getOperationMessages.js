@@ -14,6 +14,11 @@ function readOperationsFromJson (path) {
 		);
 }
 
+/**
+ * @param  {{name: string, path: string}}  pkg
+ *
+ * @return  {Promise.<Message[]>}
+ */
 module.exports = function getOperationMessages (pkg) {
 	const pattern = pkg.name === 'config' ? 'operations*.json' : 'src/operations*.json';
 	return glob(pattern, { cwd: pkg.path })

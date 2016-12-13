@@ -49,6 +49,13 @@ function getImportSourcePath (binding) {
 		getES6ImportSourcePath(ancestry);
 }
 
+/**
+ * @param  {string}  source       full source code to extract messages from
+ * @param  {string}  packageName
+ * @param  {string}  fileName
+ *
+ * @return  {Message[]}
+ */
 module.exports = function getMessagesFromSource (source, packageName, fileName) {
 	const ast = babylon.parse(source, {
 		sourceType: 'module',

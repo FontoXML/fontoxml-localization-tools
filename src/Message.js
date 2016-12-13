@@ -28,6 +28,13 @@ function mergeConflicts (conflicts1, conflicts2) {
 }
 
 module.exports = class Message {
+	/**
+	 * @param  {Object}           props
+	 * @param  {string}           props.original
+	 * @param  {string}           [props.localized]
+	 * @param  {string[]}         [props.conflicts]
+	 * @param  {Object|Object[]}  [props.metadata]
+	 */
 	constructor (props) {
 		this.original = props.original;
 
@@ -36,6 +43,12 @@ module.exports = class Message {
 		this._metadata = adaptMetadata(props.metadata);
 	}
 
+	/**
+	 * @param  {string}  original
+	 * @param  {Object}  metadata
+	 *
+	 * @return  {Message}
+	 */
 	static fromSource (original, metadata) {
 		return new Message({
 			original,
@@ -43,6 +56,15 @@ module.exports = class Message {
 		});
 	}
 
+	/**
+	 * @param  {Object}    msg
+	 * @param  {string}    msg.in
+	 * @param  {string}    [msg.out]
+	 * @param  {string[]}  [msg.conflicts]
+	 * @param  {Object[]}  [msg.meta]
+	 *
+	 * @return  {Message}
+	 */
 	static fromJSON (msg) {
 		return new Message({
 			original: msg.in,
@@ -52,6 +74,9 @@ module.exports = class Message {
 		});
 	}
 
+	/**
+	 * @return  {Object}  message in JSON format (see fromJson)
+	 */
 	toJSON () {
 		return {
 			in: this.original,
@@ -61,10 +86,18 @@ module.exports = class Message {
 		};
 	}
 
+	/**
+	 * @return  {boolean}
+	 */
 	isLocalized () {
 		return !!this._localized;
 	}
 
+	/**
+	 * @param  {Message}  oldMessage
+	 *
+	 * @return  {Message} new message with updated metadata from this template
+	 */
 	update (oldMessage) {
 		if (oldMessage && this.original !== oldMessage.original) {
 			throw new Error('Can only update a message if its original is unchanged.');
@@ -80,6 +113,9 @@ module.exports = class Message {
 		});
 	}
 
+	/**
+	 * @param  {Message}  message
+	 */
 	merge (message) {
 		if (this.original !== message.original) {
 			throw new Error('Can only merge messages with the same original.');

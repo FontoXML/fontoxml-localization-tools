@@ -1,3 +1,8 @@
+/**
+ * @param  {Message[]}  messages
+ *
+ * @return  {Message[]}  messages with duplicates merged
+ */
 module.exports = function deduplicateMessages (messages) {
 	const byOriginal = Object.create(null);
 	return messages.reduce((deduped, msg) => {

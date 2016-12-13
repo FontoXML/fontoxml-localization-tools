@@ -2,6 +2,13 @@ const Message = require('./Message');
 
 const TRANSLATEABLE_STRING_PREFIX = 't__';
 
+/**
+ * @param  {Object}  operation
+ * @param  {string}  packageName
+ * @param  {string}  fileName
+ *
+ * @return  {Message[]}
+ */
 module.exports = function getMessagesFromOperation (operation, packageName, fileName) {
 	const messages = [];
 

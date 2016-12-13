@@ -1,3 +1,9 @@
+/**
+ * @param  {Message[]}  oldMessages
+ * @param  {Message[]}  templateMessages
+ *
+ * @return  {{messages: Message[], added: Message[], removed: Message[]}}
+ */
 module.exports = function updateMessagesWithTemplate (oldMessages, templateMessages) {
 	const oldMessageByOriginal = Object.create(null);
 	oldMessages.forEach(message => {
