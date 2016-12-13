@@ -1,7 +1,16 @@
 {
   "name": "fontoxml-localization-tools",
   "version": "1.0.0",
-  "description": "Tools for creating and maintaining FontoXML localizations.",
+  "description": "Tools for working with FontoXML localization bundles.",
+  "author": "The FontoXML Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FontoXML/fontoxml-localization-tools.git"
+  },
+  "keywords": [
+    "fontoxml"
+  ],
   "main": "index.js",
   "bin": {
     "fontoxml-localization-tool": "./bin/localization-tool.js"
@@ -9,8 +18,6 @@
   "scripts": {
     "test": "mocha --recursive"
   },
-  "author": "The FontoXML team",
-  "license": "UNLICENSED",
   "dependencies": {
     "babel-traverse": "^6.19.0",
     "babylon": "^6.14.1",
