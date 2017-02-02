@@ -80,4 +80,61 @@ export default function meep () {
 			]
 		);
 	});
+
+	it('extracts messages from calls to fontoxml-localization/t() in ES6 modules with class properties', () => {
+		chai.assert.deepEqual(
+			roundtripThroughJson(getMessagesFromSource(`
+import t from 'fontoxml-localization/t';
+
+export default class Meep {
+	constructor () { this._meep = 'moop'; }
+	meep = t("Meep!")
+};
+			`, 'package-name', 'src/install.js', false)),
+			[
+				{ in: 'Meep!', meta: expectedMetaWithoutCoords() }
+			]
+		);
+	});
+
+	it('extracts messages from calls to fontoxml-localization/t() in ES6 modules with JSX code', () => {
+		chai.assert.deepEqual(
+			roundtripThroughJson(getMessagesFromSource(`
+import t from 'fontoxml-localization/t';
+
+export default (<Meep>{t('Meep!')}</Meep>);
+			`, 'package-name', 'src/install.js', false)),
+			[
+				{ in: 'Meep!', meta: expectedMetaWithoutCoords() }
+			]
+		);
+	});
+
+	it('extracts messages from calls to fontoxml-localization/t() in ES6 modules with JSX spread code', () => {
+		chai.assert.deepEqual(
+			roundtripThroughJson(getMessagesFromSource(`
+import t from 'fontoxml-localization/t';
+
+export default (<Meep {...[t('Meep!')]}></Meep>);
+			`, 'package-name', 'src/install.js', false)),
+			[
+				{ in: 'Meep!', meta: expectedMetaWithoutCoords() }
+			]
+		);
+	});
+
+	it('extracts messages from calls to fontoxml-localization/t() in ES6 modules with ES6 spread code', () => {
+		chai.assert.deepEqual(
+			roundtripThroughJson(getMessagesFromSource(`
+import t from 'fontoxml-localization/t';
+
+export default function (a, ...b) {
+	t('Meep!');
+};
+			`, 'package-name', 'src/install.js', false)),
+			[
+				{ in: 'Meep!', meta: expectedMetaWithoutCoords() }
+			]
+		);
+	});
 });

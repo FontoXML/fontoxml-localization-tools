@@ -58,10 +58,17 @@ function getImportSourcePath (binding) {
  * @return  {Message[]}
  */
 module.exports = function getMessagesFromSource (source, packageName, fileName, includeLineAndColumn) {
-	const ast = babylon.parse(source, {
-		sourceType: 'module',
-		plugins: [ 'jsx', 'objectRestSpread' ]
-	});
+	let ast;
+	try {
+		ast = babylon.parse(source, {
+			sourceType: 'module',
+			plugins: ['classProperties', 'jsx', 'objectRestSpread' ]
+		});
+	}
+	catch (error) {
+		console.error(`Unable to parse ${fileName}.`);
+		throw error;
+	}
 
 	const messages = [];
 
