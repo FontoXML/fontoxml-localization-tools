@@ -3,10 +3,11 @@
 
 const path = require('path');
 
-const extractMessages = require('../src/extractMessages');
 const deduplicateMessages = require('../src/deduplicateMessages');
+const extractMessages = require('../src/extractMessages');
 const loadMessageBundle = require('../src/loadMessageBundle');
 const promiseUtils = require('../src/promiseUtils');
+const saveMessages = require('../src/saveMessages');
 const updateMessagesWithTemplate = require('../src/updateMessagesWithTemplate');
 
 function printUsage (scriptName) {
@@ -22,8 +23,8 @@ function printUsage (scriptName) {
 	${scriptName} merge [path [path...]]
 		merge message bundles
 
-	${scriptName} update <bundlePath> <templatePath>
-		update message bundle with new template
+	${scriptName} update [--overwrite] <bundlePath> <templatePath>
+		update message bundle with new template, overwriting the source if --overwrite is passed
 	`);
 
 	return Promise.resolve();
@@ -66,17 +67,33 @@ function run () {
 				.then(deduplicateMessages)
 				.then(printMessages);
 
-		case 'update':
+		case 'update': {
+			const isOverWriteMode = args[1] === '--overwrite';
+			if (isOverWriteMode) {
+				args.shift();
+			}
 			return Promise.all([
 				loadMessageBundle(args[1]).then(deduplicateMessages),
 				loadMessageBundle(args[2])
 			])
 				.then(([messages, templateMessages]) => updateMessagesWithTemplate(messages, templateMessages))
-				.then(({ messages, added, removed }) => Promise.all([
-					printMessages(messages),
-					printMessagesToStdErr(added, 'need localization'),
-					printMessagesToStdErr(removed, 'removed')
-				]));
+				.then(({ messages, added, removed }) => {
+					let savePromise;
+					if (isOverWriteMode) {
+						savePromise = saveMessages(messages, args[1]);
+					}
+					else {
+						printMessages(messages);
+						savePromise = Promise.resolve();
+					}
+
+					printMessagesToStdErr(added, 'need localization');
+					printMessagesToStdErr(removed, 'removed');
+
+					// Wait for the save to finish
+					return savePromise();
+				});
+		}
 
 		case 'help':
 		case '-h':
