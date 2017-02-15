@@ -20,9 +20,9 @@ extract message bundle template from package(s) at the given path(s)
 
 merge message bundles
 
-	fontoxml-localization-tool update <bundlePath> <templatePath>
+	fontoxml-localization-tool update [--overwrite] <bundlePath> <templatePath>
 
-update message bundle with new template
+update message bundle with new template, overwriting the source if --overwrite is passed
 
 ## Message bundles
 
