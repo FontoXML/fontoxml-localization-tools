@@ -91,7 +91,7 @@ function run () {
 					printMessagesToStdErr(removed, 'removed');
 
 					// Wait for the save to finish
-					return savePromise();
+					return savePromise;
 				});
 		}
 
