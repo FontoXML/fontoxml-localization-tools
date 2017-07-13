@@ -87,6 +87,16 @@ module.exports = class Message {
 	}
 
 	/**
+	 * @return  {Object}  message for export to XLSX (see exportMessagesAsXlsx)
+	 */
+	toSheetRow () {
+		return {
+			in: this.original,
+			out: this._localized
+		};
+	}
+
+	/**
 	 * @return  {boolean}
 	 */
 	isLocalized () {

@@ -4,6 +4,7 @@
 const path = require('path');
 
 const deduplicateMessages = require('../src/deduplicateMessages');
+const exportMessagesAsXlsx = require('../src/exportMessagesAsXlsx');
 const extractMessages = require('../src/extractMessages');
 const loadMessageBundle = require('../src/loadMessageBundle');
 const promiseUtils = require('../src/promiseUtils');
@@ -25,6 +26,9 @@ function printUsage (scriptName) {
 
 	${scriptName} update [--overwrite] <bundlePath> <templatePath>
 		update message bundle with new template, overwriting the source if --overwrite is passed
+
+	${scriptName} export <bundlePath> <xlsxPath>
+		export bundle to an Excel .xlsx file
 	`);
 
 	return Promise.resolve();
@@ -94,6 +98,11 @@ function run () {
 					return savePromise;
 				});
 		}
+
+		case 'export':
+			return loadMessageBundle(args[1])
+				.then(deduplicateMessages)
+				.then(messages => exportMessagesAsXlsx(messages, args[2]));
 
 		case 'help':
 		case '-h':
