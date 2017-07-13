@@ -9,6 +9,7 @@ const extractMessages = require('../src/extractMessages');
 const loadMessageBundle = require('../src/loadMessageBundle');
 const promiseUtils = require('../src/promiseUtils');
 const saveMessages = require('../src/saveMessages');
+const updateMessagesFromXlsx = require('../src/updateMessagesFromXlsx');
 const updateMessagesWithTemplate = require('../src/updateMessagesWithTemplate');
 
 function printUsage (scriptName) {
@@ -29,6 +30,9 @@ function printUsage (scriptName) {
 
 	${scriptName} export <bundlePath> <xlsxPath>
 		export bundle to an Excel .xlsx file
+
+	${scriptName} import [--overwrite] <bundlePath> <xlsxPath>
+		update bundle with localizations from an Excel .xlsx file, overwriting the source if --overwrite is passed
 	`);
 
 	return Promise.resolve();
@@ -103,6 +107,23 @@ function run () {
 			return loadMessageBundle(args[1])
 				.then(deduplicateMessages)
 				.then(messages => exportMessagesAsXlsx(messages, args[2]));
+
+		case 'import': {
+			const isOverWriteMode = args[1] === '--overwrite';
+			if (isOverWriteMode) {
+				args.shift();
+			}
+			return loadMessageBundle(args[1])
+				.then(deduplicateMessages)
+				.then(messages => updateMessagesFromXlsx(messages, args[2]))
+				.then(messages => {
+					if (isOverWriteMode) {
+						return saveMessages(messages, args[1]);
+					}
+
+					printMessages(messages);
+				});
+		}
 
 		case 'help':
 		case '-h':

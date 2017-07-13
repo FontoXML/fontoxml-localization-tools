@@ -124,6 +124,20 @@ module.exports = class Message {
 	}
 
 	/**
+	 * @param  {string}  localized
+	 *
+	 * @return  {Message} new message with updated metadata from this template
+	 */
+	updateLocalization (localized) {
+		return new Message({
+			original: this.original,
+			localized,
+			conflicts: this._conflicts,
+			metadata: this._metadata
+		});
+	}
+
+	/**
 	 * @param  {Message}  message
 	 */
 	merge (message) {
