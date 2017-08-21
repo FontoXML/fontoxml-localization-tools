@@ -49,6 +49,19 @@ function getImportSourcePath (binding) {
 		getES6ImportSourcePath(ancestry);
 }
 
+function getMessageString (message, fileName) {
+	switch (message.type) {
+		case 'StringLiteral':
+			return message.value;
+		case 'BinaryExpression':
+			if (message.operator !== '+') {
+				break;
+			}
+			return getMessageString(message.left, fileName) + getMessageString(message.right, fileName);
+	}
+	throw new Error(`Call to t() with non-literal argument in ${fileName}, line ${message.loc.start.line}. Use a string literal or a concatenation of string literals. Any other construction is not supported.`);
+}
+
 /**
  * @param  {string}   source       full source code to extract messages from
  * @param  {string}   packageName
@@ -84,10 +97,10 @@ module.exports = function getMessagesFromSource (source, packageName, fileName, 
 				return;
 			}
 
-			const message = path.node.arguments[0];
-			if (!message || message.type !== 'StringLiteral') {
-				console.warn('Call to t() with non-literal argument at', message.loc);
+			if (path.node.arguments.length < 1 || path.node.arguments.length > 2) {
+				throw new Error(`Call to t() with wrong number of arguments in ${fileName}, line ${path.node.loc.start.line}. It must be called with at least one argument, and at most 2 arguments.`);
 			}
+			const message = path.node.arguments[0];
 
 			const meta = {
 				package: packageName,
@@ -97,7 +110,7 @@ module.exports = function getMessagesFromSource (source, packageName, fileName, 
 				meta.line = message.loc.start.line;
 				meta.column = message.loc.start.column;
 			}
-			messages.push(Message.fromSource(message.value, meta));
+			messages.push(Message.fromSource(getMessageString(message, fileName), meta));
 		}
 	});
 

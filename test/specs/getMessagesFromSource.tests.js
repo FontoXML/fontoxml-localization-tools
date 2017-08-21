@@ -137,4 +137,113 @@ export default function (a, ...b) {
 			]
 		);
 	});
+
+	it('extracts messages from calls to fontoxml-localization/t() using the concat operator', () => {
+		chai.assert.deepEqual(
+			roundtripThroughJson(getMessagesFromSource(`
+import t from 'fontoxml-localization/t';
+
+t(
+	"Meep! Let's see what the maximum column width is. Is it here? Here? maybe if we add even more text?" +
+		"Meep! We've got it, this is a sane case for using the concat operator ('+')."
+);
+			`, 'package-name', 'src/install.js', false)),
+			[
+				{
+					in: "Meep! Let's see what the maximum column width is. Is it here? Here? maybe if we add even more text?" +
+						"Meep! We've got it, this is a sane case for using the concat operator ('+').",
+					meta: expectedMetaWithoutCoords() }
+			]
+		);
+	});
+
+	it('extracts messages from calls to fontoxml-localization/t() using the concat operator with nesting', () => {
+		chai.assert.deepEqual(
+			roundtripThroughJson(getMessagesFromSource(`
+import t from 'fontoxml-localization/t';
+
+t(
+	"Meep! Let's see what the maximum column width is. Is it here? Here? maybe if we add even more text? " +
+		"Meep! We've got it, this is a sane case for using the concat operator ('+'). " +
+		"Let's add some more, for good measure " +
+		"More " +
+		"More! " +
+		"More!! " +
+		"More!!! "
+);
+			`, 'package-name', 'src/install.js', false)),
+			[
+				{
+						in: "Meep! Let's see what the maximum column width is. Is it here? Here? maybe if we add even more text? " +
+						"Meep! We've got it, this is a sane case for using the concat operator ('+'). " +
+						"Let's add some more, for good measure " +
+						"More " +
+						"More! " +
+						"More!! " +
+						"More!!! ",
+					meta: expectedMetaWithoutCoords() }
+			]
+		);
+	});
+
+	it('throws when t() is called with something else then a string literal, of a concat of strings: function call', () => {
+		chai.assert.throws(() =>
+			roundtripThroughJson(getMessagesFromSource(`
+import t from 'fontoxml-localization/t';
+
+function x () { return "Meep!"'; }
+
+t(x());
+			`, 'package-name', 'src/install.js', false), 'Call to t() with non-literal argument in src/install.js')
+		);
+	});
+
+	it('throws when t() is called with something else then a string literal, of a concat of strings: numerics', () => {
+		chai.assert.throws(() =>
+			roundtripThroughJson(getMessagesFromSource(`
+import t from 'fontoxml-localization/t';
+
+t(1);
+			`, 'package-name', 'src/install.js', false), 'Call to t() with non-literal argument in src/install.js')
+		);
+	});
+
+	it('throws when t() is called with something else then a string literal, of a concat of strings: var ref', () => {
+		chai.assert.throws(() =>
+			roundtripThroughJson(getMessagesFromSource(`
+import t from 'fontoxml-localization/t';
+
+const x = "Meep!";
+
+t(x);
+			`, 'package-name', 'src/install.js', false), 'Call to t() with non-literal argument in src/install.js')
+		);
+	});
+	it('throws when t() is called with a wrong number of arguments: too little', () => {
+		chai.assert.throws(() =>
+			roundtripThroughJson(getMessagesFromSource(`
+import t from 'fontoxml-localization/t';
+
+t();
+			`, 'package-name', 'src/install.js', false), 'Call to t() with non-literal argument in src/install.js')
+		);
+	});
+	it('throws when t() is called with a wrong number of arguments: too few', () => {
+		chai.assert.throws(() =>
+			roundtripThroughJson(getMessagesFromSource(`
+import t from 'fontoxml-localization/t';
+
+t();
+			`, 'package-name', 'src/install.js', false), 'Call to t() with wrong number of arguments in src/install.js')
+		);
+	});
+	it('throws when t() is called with a wrong number of arguments: too many', () => {
+		chai.assert.throws(() =>
+			roundtripThroughJson(getMessagesFromSource(`
+import t from 'fontoxml-localization/t';
+
+t('~meep~', {}, 1);
+			`, 'package-name', 'src/install.js', false), 'Call to t() with wrong number of arguments in src/install.js')
+		);
+	});
 });
