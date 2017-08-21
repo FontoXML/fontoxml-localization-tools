@@ -1,4 +1,5 @@
-# fontoxml-localization-tools
+# fontoxml-localization-tools  [![Build Status](https://travis-ci.org/FontoXML/fontoxml-localization-tools.svg?branch=master)](https://travis-ci.org/FontoXML/fontoxml-localization-tools) [![devDependency Status](https://david-dm.org/FontoXML/fontoxml-localization-tools/dev-status.svg)](https://david-dm.org/FontoXML/fontoxml-localization-tools#info=devDependencies) [![NPM version](https://badge.fury.io/js/fontoxml-localization-tools.svg)](http://badge.fury.io/js/fontoxml-localization-tools)
+
 
 Tools for working with FontoXML localization bundles.
 
