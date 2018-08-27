@@ -1,3 +1,5 @@
+const parser = require('./parser');
+
 function adaptMetadata (meta) {
 	if (!meta) {
 		return [];
@@ -36,9 +38,17 @@ module.exports = class Message {
 	 * @param  {Object|Object[]}  [props.metadata]
 	 */
 	constructor (props) {
+		if (props.original !== parser.parse(props.original)) {
+			throw new Error('Cannot use dashes (-) in ' + props.original);
+		}
 		this.original = props.original;
 
-		this._localized = props.localized;
+		if (props.localized) {
+			if (props.localized !== parser.parse(props.localized)) {
+				throw new Error('Cannot use dashes (-) in ' + props.localized);
+			}
+			this._localized = props.localized;
+		}
 		this._conflicts = props.conflicts || [];
 		this._metadata = adaptMetadata(props.metadata);
 	}

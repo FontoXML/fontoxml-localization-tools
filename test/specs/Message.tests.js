@@ -33,6 +33,28 @@ describe('Message', () => {
 				jsonFormattedMessage
 			);
 		});
+
+		it('throws when passed unparsable strings containing dashes in original', () => {
+			const jsonFormattedMessage = {
+				in: '{TEST, select, contains-dashes{Now with dashes!} other{other}}',
+				out: '{TEST, select, contains_dashes{Nu met streepjes!} other{anders}}',
+				meta: [
+					{ package: 'package-name' }
+				]
+			};
+			chai.assert.throws(() => Message.fromJSON(jsonFormattedMessage), 'Cannot use dashes (-) in {TEST, select, contains-dashes{Now with dashes!} other{other}}');
+		});
+
+		it('throws when passed unparsable strings containing dashes in localized', () => {
+			const jsonFormattedMessage = {
+				in: '{TEST, select, contains_dashes{With multiple words!} other{other}}',
+				out: '{TEST, select, contains-dashes{Met meerdere woorden!} other{anders}}',
+				meta: [
+					{ package: 'package-name' }
+				]
+			};
+			chai.assert.throws(() => Message.fromJSON(jsonFormattedMessage), 'Cannot use dashes (-) in {TEST, select, contains-dashes{Met meerdere woorden!} other{anders}}');
+		});
 	});
 
 	describe('isLocalized()', () => {
