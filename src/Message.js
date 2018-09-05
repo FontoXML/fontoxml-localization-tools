@@ -41,7 +41,10 @@ module.exports = class Message {
 		try {
 			parser.parse(props.original);
 		}
-		catch (_err) {
+		catch (error) {
+			if (error instanceof parser.SyntaxError) {
+				throw error;
+			}
 			throw new Error('Cannot use dashes (-) in ' + props.original);
 		}
 		this.original = props.original;
@@ -50,7 +53,10 @@ module.exports = class Message {
 			try {
 				parser.parse(props.localized);
 			}
-			catch (_err) {
+			catch (error) {
+				if (error instanceof parser.SyntaxError) {
+					throw error;
+				}
 				throw new Error('Cannot use dashes (-) in ' + props.localized);
 			}
 			this._localized = props.localized;
