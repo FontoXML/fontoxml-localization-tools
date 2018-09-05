@@ -38,13 +38,19 @@ module.exports = class Message {
 	 * @param  {Object|Object[]}  [props.metadata]
 	 */
 	constructor (props) {
-		if (props.original !== parser.parse(props.original)) {
+		try {
+			parser.parse(props.original);
+		}
+		catch (_err) {
 			throw new Error('Cannot use dashes (-) in ' + props.original);
 		}
 		this.original = props.original;
 
 		if (props.localized) {
-			if (props.localized !== parser.parse(props.localized)) {
+			try {
+				parser.parse(props.localized);
+			}
+			catch (_err) {
 				throw new Error('Cannot use dashes (-) in ' + props.localized);
 			}
 			this._localized = props.localized;
