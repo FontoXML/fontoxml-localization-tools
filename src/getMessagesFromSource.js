@@ -93,7 +93,7 @@ module.exports = function getMessagesFromSource (source, packageName, fileName, 
 
 			const binding = path.scope.getBinding('t');
 			const sourcePath = getImportSourcePath(binding);
-			if (sourcePath !== 'fontoxml-localization/t' && sourcePath !== 'fontoxml-localization/src/t') {
+			if (!sourcePath || !sourcePath.match(/^fontoxml-localization\/(src\/)?t(\.js)?$/g)) {
 				return;
 			}
 
