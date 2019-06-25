@@ -13,7 +13,7 @@ const readFile = promiseUtils.asPromise(fs.readFile);
  * @return  {Promise.<Message[]>}
  */
 module.exports = function getSourceMessages (pkg, options) {
-	const pattern = pkg.name === 'config' ? '**/*.js' : 'src/**/*.js';
+	const pattern = pkg.name === 'config' ? '**/*+(.js|.jsx)' : 'src/**/*+(.js|.jsx)';
 
 	return glob(pattern, { cwd: pkg.path })
 		.then(sourceFiles => promiseUtils.flatMap(sourceFiles, sourceFile => {
